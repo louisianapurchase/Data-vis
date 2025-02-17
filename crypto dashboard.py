@@ -1,5 +1,5 @@
 import dash
-from dash import dcc, html, Input, Output
+from dash import dcc, html, Input, Output, State
 import plotly.graph_objs as go
 import requests
 import pandas as pd
@@ -51,6 +51,19 @@ def get_coin_logo(crypto_id):
         return f"https://www.cryptocompare.com{data[crypto_id]['ImageUrl']}"
     return None
 
+# Function to fetch extra details for a cryptocurrency
+def get_extra_details(crypto_id):
+    url = f"https://min-api.cryptocompare.com/data/pricemultifull"
+    params = {
+        "fsyms": crypto_id.upper(),
+        "tsyms": "USD,EUR",
+    }
+    headers = {
+        "Authorization": f"Apikey {API_KEY}"
+    }
+    response = requests.get(url, params=params, headers=headers)
+    return response.json()['RAW'][crypto_id.upper()]['USD']
+
 # Define layout
 app.layout = html.Div([
     html.H1("Live Cryptocurrency Dashboard", style={"textAlign": "center", "color": "#3498db", "fontFamily": "Roboto, sans-serif"}),
@@ -58,6 +71,16 @@ app.layout = html.Div([
     html.Div(id="crypto-details", style={"color": "#3498db", "margin": "20px", "fontFamily": "Roboto, sans-serif"}),
 
     html.Div(id="crypto-charts", children=[], style={"display": "flex", "flexWrap": "wrap", "gap": "30px", "justifyContent": "center"}),
+
+    # Add buttons for each cryptocurrency in the initial layout
+    html.Div([
+        html.Button(
+            children=f"More Info for {crypto}",
+            id=f"info-btn-{crypto}",
+            n_clicks=0,
+            style={"display": "inline-block", "margin": "10px"}
+        ) for crypto in ['ETH', 'BTC', 'DASH', 'LTC', 'ADA', 'XRP']
+    ], style={"textAlign": "center"}),
 
     html.H2("Latest Crypto News", style={"color": "#3498db", "marginTop": "30px", "fontFamily": "Roboto, sans-serif"}),
     html.Ul(id="news-feed", style={"color": "#3498db", "fontFamily": "Roboto, sans-serif"})
@@ -73,9 +96,9 @@ news_items = [
 # Define callback to update graph and details
 @app.callback(
     [Output("crypto-charts", "children"), Output("crypto-details", "children"), Output("news-feed", "children")],
-    [Input("crypto-charts", "children")]  # This is a dummy input to trigger the callback on page load
+    [Input(f"info-btn-{crypto}", "n_clicks") for crypto in ['ETH', 'BTC', 'DASH', 'LTC', 'ADA', 'XRP']]  # Each button's n_clicks as an input
 )
-def update_dashboard(_):
+def update_dashboard(*args):
     # Fetch live data
     data = get_crypto_data()
 
@@ -97,7 +120,7 @@ def update_dashboard(_):
 
         # Create line chart for the cryptocurrency
         chart = html.Div([
-            html.Div([
+            html.Div([ 
                 dcc.Graph(
                     id=f"{crypto}-graph",
                     figure=go.Figure(
@@ -126,8 +149,24 @@ def update_dashboard(_):
     # Static news items
     news_list = [html.Li(html.A(news["title"], href=news["url"], target="_blank", style={"color": "#3498db"})) for news in news_items]
 
-    # Initial message for crypto details
-    details_text = html.P("Click a crypto for details", style={"color": "#3498db"})
+    # Check if any button was clicked
+    ctx = dash.callback_context
+    if ctx.triggered:
+        button_id = ctx.triggered[0]['prop_id'].split('.')[0]
+        crypto_id = button_id.replace("info-btn-", "")
+        extra_details = get_extra_details(crypto_id)
+        details_text = html.Div([ 
+            html.H3(f"{crypto_id} Details", style={"color": "#3498db"}),
+            html.P(f"Current Price (USD): ${extra_details['PRICE']:.2f}"),
+            html.P(f"Current Price (EUR): €{extra_details['PRICE'] * extra_details['EUR']:.2f}"),
+            html.P(f"24h Change: {extra_details['CHANGEPCT24HOUR']:.2f}%"),
+            html.P(f"Market Cap: ${extra_details['MKTCAP']:,.2f}"),
+            html.P(f"24h Volume: ${extra_details['TOTALVOLUME24HTO']:,.2f}"),
+            html.P(f"All-Time High: ${extra_details['HIGHDAY']:.2f}"),
+            html.P(f"All-Time Low: ${extra_details['LOWDAY']:.2f}"),
+        ], style={"border": "1px solid #3498db", "padding": "10px", "borderRadius": "10px", "backgroundColor": "#2c3e50"})
+    else:
+        details_text = html.P("Click a crypto for details", style={"color": "#3498db"})
 
     return chart_children, details_text, news_list
 
