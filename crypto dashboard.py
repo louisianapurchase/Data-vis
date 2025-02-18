@@ -12,79 +12,62 @@ app.title = "Live Crypto Dashboard"
 # Replace this with your CryptoCompare API key
 API_KEY = "16a875792eb8ede0e495d5b058a02741c6fd7a6e1a22143d5def2fdec3c173a2"
 
-# Function to fetch live crypto data from CryptoCompare API
+# List of cryptocurrencies to display
+CRYPTO_LIST = ["ETH", "BTC", "DASH", "LTC", "ADA", "XRP"]
+
+# Function to fetch live crypto data
 def get_crypto_data():
     url = "https://min-api.cryptocompare.com/data/pricemulti"
-    params = {
-        "fsyms": "ETH,BTC,DASH,LTC,ADA,XRP",  # Add more cryptocurrencies here
-        "tsyms": "USD,EUR",  # Target currencies to track
-    }
-    headers = {
-        "Authorization": f"Apikey {API_KEY}"
-    }
+    params = {"fsyms": ",".join(CRYPTO_LIST), "tsyms": "USD"}
+    headers = {"Authorization": f"Apikey {API_KEY}"}
     response = requests.get(url, params=params, headers=headers)
     return response.json()
 
-# Function to fetch historical data for a cryptocurrency from CryptoCompare
+# Function to fetch historical data
 def get_historical_data(crypto_id):
     url = f"https://min-api.cryptocompare.com/data/v2/histoday"
-    params = {
-        "fsym": crypto_id.upper(),  # 'fsym' is the cryptocurrency symbol (e.g., 'BTC')
-        "tsym": "USD",              # 'tsym' is the target currency symbol (e.g., 'USD')
-        "limit": 200,               # Fetch data for the last 200 days
-    }
-    headers = {
-        "Authorization": f"Apikey {API_KEY}"
-    }
+    params = {"fsym": crypto_id, "tsym": "USD", "limit": 200}
+    headers = {"Authorization": f"Apikey {API_KEY}"}
     response = requests.get(url, params=params, headers=headers)
-    return response.json()['Data']['Data']
+    return response.json().get("Data", {}).get("Data", [])
 
-# Function to fetch coin logo from CryptoCompare
+# Function to fetch coin logo
 def get_coin_logo(crypto_id):
-    url = f"https://min-api.cryptocompare.com/data/all/coinlist"
-    headers = {
-        "Authorization": f"Apikey {API_KEY}"
-    }
+    url = "https://min-api.cryptocompare.com/data/all/coinlist"
+    headers = {"Authorization": f"Apikey {API_KEY}"}
     response = requests.get(url, headers=headers)
-    data = response.json().get('Data', {})
-    if crypto_id in data:
-        return f"https://www.cryptocompare.com{data[crypto_id]['ImageUrl']}"
-    return None
+    data = response.json().get("Data", {})
+    return f"https://www.cryptocompare.com{data.get(crypto_id, {}).get('ImageUrl', '')}"
 
-# Function to fetch extra details for a cryptocurrency
+# Function to fetch extra details
 def get_extra_details(crypto_id):
     url = f"https://min-api.cryptocompare.com/data/pricemultifull"
-    params = {
-        "fsyms": crypto_id.upper(),
-        "tsyms": "USD,EUR",
-    }
-    headers = {
-        "Authorization": f"Apikey {API_KEY}"
-    }
+    params = {"fsyms": crypto_id, "tsyms": "USD"}
+    headers = {"Authorization": f"Apikey {API_KEY}"}
     response = requests.get(url, params=params, headers=headers)
-    return response.json()['RAW'][crypto_id.upper()]['USD']
+    return response.json().get("RAW", {}).get(crypto_id, {}).get("USD", {})
 
 # Define layout
 app.layout = html.Div([
-    html.H1("Live Cryptocurrency Dashboard", style={"textAlign": "center", "color": "#3498db", "fontFamily": "Roboto, sans-serif"}),
+    html.H1("Live Cryptocurrency Dashboard", style={"textAlign": "center", "color": "#3498db"}),
 
-    html.Div(id="crypto-details", style={"color": "#3498db", "margin": "20px", "fontFamily": "Roboto, sans-serif"}),
-
-    html.Div(id="crypto-charts", children=[], style={"display": "flex", "flexWrap": "wrap", "gap": "30px", "justifyContent": "center"}),
-
-    # Add buttons for each cryptocurrency in the initial layout
+    # Crypto logo selection area
     html.Div([
-        html.Button(
-            children=f"More Info for {crypto}",
-            id=f"info-btn-{crypto}",
-            n_clicks=0,
-            style={"display": "inline-block", "margin": "10px"}
-        ) for crypto in ['ETH', 'BTC', 'DASH', 'LTC', 'ADA', 'XRP']
+        html.Img(
+            src=get_coin_logo(crypto),
+            id=f"crypto-img-{crypto}",
+            style={"height": "50px", "width": "50px", "cursor": "pointer", "margin": "10px"}
+        ) for crypto in CRYPTO_LIST
     ], style={"textAlign": "center"}),
 
-    html.H2("Latest Crypto News", style={"color": "#3498db", "marginTop": "30px", "fontFamily": "Roboto, sans-serif"}),
-    html.Ul(id="news-feed", style={"color": "#3498db", "fontFamily": "Roboto, sans-serif"})
-], style={"backgroundColor": "#1e1e1e", "padding": "20px", "minHeight": "100vh", "height": "100%", "margin": "0"})
+    # Dynamic content containers
+    html.Div(id="crypto-details", style={"color": "#3498db", "marginTop": "20px"}),
+    html.Div(id="crypto-charts", style={"display": "flex", "flexWrap": "wrap", "justifyContent": "center"}),
+
+    # News Section
+    html.H2("Latest Crypto News", style={"color": "#3498db", "marginTop": "30px"}),
+    html.Ul(id="news-feed", style={"color": "#3498db"})
+], style={"backgroundColor": "#1e1e1e", "padding": "20px", "minHeight": "100vh"})
 
 # Static news items
 news_items = [
@@ -93,83 +76,59 @@ news_items = [
     {"title": "XRP Price Slips. How the SEC Approving an ETF Could Boost the Crypto.", "url": "https://www.barrons.com/articles/xrp-price-slips-how-the-sec-approving-an-etf-could-boost-the-crypto-e27edd19"}
 ]
 
-# Define callback to update graph and details
+# Callback to update details and charts when a logo is clicked
 @app.callback(
     [Output("crypto-charts", "children"), Output("crypto-details", "children"), Output("news-feed", "children")],
-    [Input(f"info-btn-{crypto}", "n_clicks") for crypto in ['ETH', 'BTC', 'DASH', 'LTC', 'ADA', 'XRP']]  # Each button's n_clicks as an input
+    [Input(f"crypto-img-{crypto}", "n_clicks") for crypto in CRYPTO_LIST]
 )
 def update_dashboard(*args):
-    # Fetch live data
-    data = get_crypto_data()
+    ctx = dash.callback_context
 
+    # Fetch live data once
+    data = get_crypto_data()
     if not data:
         return [], html.P("Error loading data", style={"color": "white"}), []
 
-    # Create a list of chart children (graphs for each cryptocurrency)
     chart_children = []
     for crypto, prices in data.items():
-        # Fetch historical data for each cryptocurrency
         historical_data = get_historical_data(crypto)
+        price_points = [price["close"] for price in historical_data]
+        timestamps = [pd.to_datetime(price["time"], unit="s") for price in historical_data]
 
-        # Prepare data for the line chart (price history over time)
-        prices = [price['close'] for price in historical_data]
-        timestamps = [pd.to_datetime(price['time'], unit='s') for price in historical_data]
-
-        # Fetch coin logo for each cryptocurrency
-        coin_logo_url = get_coin_logo(crypto)
-
-        # Create line chart for the cryptocurrency
-        chart = html.Div([
-            html.Div([ 
-                dcc.Graph(
-                    id=f"{crypto}-graph",
-                    figure=go.Figure(
-                        data=[go.Scatter(x=timestamps, y=prices, mode='lines', name=crypto)],
-                        layout=go.Layout(
-                            title=f"{crypto} Price History (200 days)",
-                            xaxis={"title": "Date"},
-                            yaxis={"title": "Price (USD)"},
-                            template="plotly_dark",
-                            margin={"l": 50, "r": 50, "t": 50, "b": 50}
-                        )
-                    ),
-                    style={"width": "450px", "height": "300px", "borderRadius": "10px", "boxShadow": "0 4px 8px rgba(0, 0, 0, 0.3)", "margin": "10px"}
+        chart_children.append(html.Div([
+            dcc.Graph(
+                figure=go.Figure(
+                    data=[go.Scatter(x=timestamps, y=price_points, mode="lines", name=crypto)],
+                    layout=go.Layout(
+                        title=f"{crypto} Price History (200 days)",
+                        xaxis={"title": "Date"},
+                        yaxis={"title": "Price (USD)"},
+                        template="plotly_dark"
+                    )
                 ),
-                # Add coin logo with a clickable button to show more info
-                html.Button(
-                    children=html.Img(src=coin_logo_url, height="40px", width="40px"),
-                    id=f"info-btn-{crypto}",
-                    n_clicks=0,
-                    style={"borderRadius": "50%", "border": "none", "backgroundColor": "transparent", "cursor": "pointer"}
-                ),
-            ])
-        ])
-        chart_children.append(chart)
+                style={"width": "450px", "height": "300px", "borderRadius": "10px", "boxShadow": "0 4px 8px rgba(0, 0, 0, 0.3)", "margin": "10px"}
+            )
+        ], style={"textAlign": "center"}))
 
-    # Static news items
-    news_list = [html.Li(html.A(news["title"], href=news["url"], target="_blank", style={"color": "#3498db"})) for news in news_items]
-
-    # Check if any button was clicked
-    ctx = dash.callback_context
+    # Handle logo clicks for details
+    details_text = html.P("Click a crypto icon for details", style={"color": "#3498db"})
     if ctx.triggered:
-        button_id = ctx.triggered[0]['prop_id'].split('.')[0]
-        crypto_id = button_id.replace("info-btn-", "")
-        extra_details = get_extra_details(crypto_id)
-        details_text = html.Div([ 
-            html.H3(f"{crypto_id} Details", style={"color": "#3498db"}),
-            html.P(f"Current Price (USD): ${extra_details['PRICE']:.2f}"),
-            html.P(f"Current Price (EUR): €{extra_details['PRICE'] * extra_details['EUR']:.2f}"),
-            html.P(f"24h Change: {extra_details['CHANGEPCT24HOUR']:.2f}%"),
-            html.P(f"Market Cap: ${extra_details['MKTCAP']:,.2f}"),
-            html.P(f"24h Volume: ${extra_details['TOTALVOLUME24HTO']:,.2f}"),
-            html.P(f"All-Time High: ${extra_details['HIGHDAY']:.2f}"),
-            html.P(f"All-Time Low: ${extra_details['LOWDAY']:.2f}"),
-        ], style={"border": "1px solid #3498db", "padding": "10px", "borderRadius": "10px", "backgroundColor": "#2c3e50"})
-    else:
-        details_text = html.P("Click a crypto for details", style={"color": "#3498db"})
+        button_id = ctx.triggered[0]["prop_id"].split(".")[0]
+        if button_id.startswith("crypto-img-"):
+            crypto_id = button_id.replace("crypto-img-", "")
+            extra_details = get_extra_details(crypto_id)
+            details_text = html.Div([
+                html.H3(f"{crypto_id} Details", style={"color": "#3498db"}),
+                html.P(f"Current Price (USD): ${extra_details.get('PRICE', 0):,.2f}"),
+                html.P(f"24h Change: {extra_details.get('CHANGEPCT24HOUR', 0):.2f}%"),
+                html.P(f"Market Cap: ${extra_details.get('MKTCAP', 0):,.2f}"),
+                html.P(f"24h Volume: ${extra_details.get('TOTALVOLUME24HTO', 0):,.2f}")
+            ], style={"border": "1px solid #3498db", "padding": "10px", "borderRadius": "10px", "backgroundColor": "#2c3e50"})
+
+    news_list = [html.Li(html.A(news["title"], href=news["url"], target="_blank", style={"color": "#3498db"})) for news in news_items]
 
     return chart_children, details_text, news_list
 
 # Run app
 if __name__ == "__main__":
-    app.run_server(debug=True, use_reloader=False)  # use_reloader=False to prevent duplicate callbacks
+    app.run_server(debug=True, use_reloader=False)
