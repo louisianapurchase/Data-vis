@@ -1,0 +1,101 @@
+incident_number,incident_date,incident_time,location,latitude,longitude,perpetrator_name,ward,neighborhood
+INCDC240607/521254,2/20/24,20:40:00,"New York 0.0 0.0, Foggy Bottom, Ward 2.0, Washington, DC",,,Ramone Brown,2.0,Foggy Bottom
+INCDC240607/4f94f6,6/3/24,16:46:00,"100 block, Irving 5.0 3.0, Woodland/Fort Stanton, Garfield Heights, Knox Hill, Ward 8, Washington, DC",38.85302401140957,-76.9736078580408,Kayla Brown,5.0,Unknown
+INCDC240607/d407d3,4/29/24,7:40:00,"4500 block, Benning 4.0 1.0, Capitol View, Marshall Heights, Benning Heights, Ward 7, Washington, DC",38.8904471,-76.9375326,Keiphone Bennett,7.0,Benning Ridge
+INCDC240607/d407d3,4/29/24,7:40:00,"4500 block, Benning 4.0 1.0, Capitol View, Marshall Heights, Benning Heights, Ward 7, Washington, DC",38.8904471,-76.9375326,Asia Clark,7.0,Benning Ridge
+INCDC240607/d407d3,4/29/24,7:40:00,"4500 block, Benning 4.0 1.0, Capitol View, Marshall Heights, Benning Heights, Ward 7, Washington, DC",38.8904471,-76.9375326,Kevin Edwards,7.0,Benning Ridge
+INCDC240607/d407d3,4/29/24,7:40:00,"4500 block, Benning Road SE 4.0 1.0, Benning Ridge, Ward 7.0, Washington, DC",,,Keiphone Bennett,7.0,Benning Ridge
+INCDC240607/d407d3,4/29/24,7:40:00,"4500 block, Benning Road SE 4.0 1.0, Benning Ridge, Ward 7.0, Washington, DC",,,Asia Clark,7.0,Benning Ridge
+INCDC240607/d407d3,4/29/24,7:40:00,"4500 block, Benning Road SE 4.0 1.0, Benning Ridge, Ward 7.0, Washington, DC",,,Kevin Edwards,7.0,Benning Ridge
+INCDC240607/d407d3,4/29/24,7:40:00,"1200 block, Pennsylvania 0.0 2.0, Arboretum, Anacostia River, Ward 8, Washington, DC",38.87678584519606,-76.97796163652441,Keiphone Bennett,6.0,Capitol Hill
+INCDC240607/d407d3,4/29/24,7:40:00,"1200 block, Pennsylvania 0.0 2.0, Arboretum, Anacostia River, Ward 8, Washington, DC",38.87678584519606,-76.97796163652441,Asia Clark,6.0,Capitol Hill
+INCDC240607/d407d3,4/29/24,7:40:00,"1200 block, Pennsylvania 0.0 2.0, Arboretum, Anacostia River, Ward 8, Washington, DC",38.87678584519606,-76.97796163652441,Kevin Edwards,6.0,Capitol Hill
+INCDC240607/699ca2,5/11/24,17:00:00,"136 block, Kenilworth 0.0 0.0, Benning, Ward 7.0, Washington, DC",,,She'Ri Bell,7.0,Benning
+INCDC240607/534c74,4/29/24,7:40:00,"National Mall, Potomac River, Ward 2, Washington, DC",38.8950368,-77.0365427,Unknown,2,"National Mall, Potomac River"
+INCDC240607/d52a34,4/29/24,7:40:00,"National Mall, Potomac River, Ward 2, Washington, DC",38.8950368,-77.0365427,Unknown,2,"National Mall, Potomac River"
+INCDC240607/f9f81f,2/27/24,,"Pennsylvania Avenue 0.0 1.0, Navy Yard, Ward 6.0, Washington, DC",,,Larry Fisher,6.0,Navy Yard
+INCDC240610/ba8bc9,5/23/24,0:50:00,"500 block, Georgia 0.0 3.0, Sixteenth Street Heights, Ward 4.0, Washington, DC",,,Raysean Brown,4.0,Sixteenth Street Heights
+INCDC240610/893ff8,3/28/24,10:32:00,"900 block, Brentwood 0.0 0.0, Brentwood, Ward 5.0, Washington, DC",,,Michael Hines,5.0,Brentwood
+INCDC240607/afec73,4/29/24,7:40:00,"National Mall, Potomac River, Ward 2, Washington, DC",38.8950368,-77.0365427,Hanif Brown,2,"National Mall, Potomac River"
+INCDC240612/ac01fd,5/26/24,11:00:00,"Howard University, Le Droit Park, Cardozo/Shaw, Ward 1, Washington, DC",38.916946,-77.0296368,Lamar Stephens,1.0,Pleasant Plains
+INCDC240620/46d1a3,3/11/24,1:50:00,"Lee 5.0 0.0, Deanwood, Ward 5.0, Washington, DC",,,Maurice Edwards,5.0,Deanwood
+INCDC240621/6207e1,1/11/24,,"400 block, Marietta 7.0 3.0, Brightwood Park, Ward 4.0, Washington, DC",,,Tony Walker,4.0,Brightwood Park
+INCDC240624/8a109d,5/26/24,,"3000 block, Georgia 0.0 3.0, Pleasant Plains, Ward 1.0, Washington, DC",,,Michael Robinson,1.0,Pleasant Plains
+INCDC240627/16387a,3/11/24,3:53:00,"Lee 5.0 0.0, Deanwood, Ward 7.0, Washington, DC",,,Auzsa Beatty,7.0,Deanwood
+INCDC240628/fb8de6,1/12/24,13:30:00,"4000 block, Hunt Place 7.0 0.0, Upper Central NE, Ward 7.0, Washington, DC",,,Caleb Johnson,7.0,Upper Central NE
+INCDC240628/9b3eb2,6/7/24,14:00:00,"200 block, Tingey 5.0 1.0, Navy Yard, Ward 8.0, Washington, DC",,,Raymond Davese,8.0,Navy Yard
+INCDC240628/9b3eb2,6/7/24,14:00:00,"NoMa, Ward 5.0, Washington, DC",,,Raymond Davese,5.0,NoMa
+INCDC240703/b54f8f,7/2/24,20:51:00,"1100 block, Independence 0.0 1.0, Lincoln Park, Ward 6.0, Washington, DC",,,Marion Austin,6.0,Lincoln Park
+INCDC240703/b54f8f,7/2/24,20:51:00,"1100 block, Independence 0.0 1.0, Lincoln Park, Ward 6.0, Washington, DC",,,Jacorri Stroman,6.0,Lincoln Park
+INCDC240711/8642ad,7/10/24,6:04:00,"2000 block, Alabama 0.0 1.0, Douglass, Ward 8.0, Washington, DC",,,Anthony Campbell,8.0,Douglass
+INCDC240711/07ab64,7/9/24,11:00:00,"Dupont Park, Ward 8.0, Washington, DC",,,Elijah Harrison,8.0,Dupont Park
+INCDC240715/92de6e,6/20/24,6:57:00,"9th 5.0 3.0, Capitol Hill, Lincoln Park, Ward 6, Washington, DC",38.887198832975514,-76.99376402468347,Marquise Butts,1.0,Old City 2
+INCDC240715/141381,6/20/24,6:57:00,"1000 block, 9th 5.0 3.0, Near Southeast, Navy Yard, Ward 8, Washington, DC",38.877402,-76.99365,Marquise Butts,1.0,Westminster
+INCDC240718/aef557,4/27/24,14:41:00,"4400 block, Texas 0.0 1.0, Benning Ridge, Ward 7.0, Washington, DC",,,Lamontee Fowler,7.0,Benning Ridge
+INCDC240718/aef557,4/27/24,14:41:00,"4400 block, Texas 0.0 1.0, Benning Ridge, Ward 7.0, Washington, DC",,,Lamontee Fowler,7.0,Benning Ridge
+INCDC240718/aef557,4/27/24,14:41:00,"4300 block, G 5.0 1.0, Union Station, Stanton Park, Kingman Park, Ward 6, Washington, DC",38.89891833129609,-76.99292801886938,Lamontee Fowler,7.0,Benning Ridge
+INCDC240718/589184,5/2/24,14:37:00,"National Mall, Potomac River, Ward 2, Washington, DC",38.8950368,-77.0365427,Lamontee Fowler,2,"National Mall, Potomac River"
+INCDC240718/78ee5f,5/8/24,15:34:00,"National Mall, Potomac River, Ward 2, Washington, DC",38.8950368,-77.0365427,Lamontee Fowler,2,"National Mall, Potomac River"
+INCDC240723/1c2395,2/25/24,14:58:00,"1000 block, F 5.0 0.0, Stanton Park, Ward 2.0, Washington, DC",,,Elias Robertson,2.0,Stanton Park
+INCDC240723/1c2395,2/25/24,14:58:00,"1000 block, F 5.0 0.0, Stanton Park, Ward 2.0, Washington, DC",,,Eligah Hughes,2.0,Stanton Park
+INCDC240731/78c2aa,5/30/24,21:32:00,"2000 block, Savannah 5.0 0.0, Shipley, Ward 8.0, Washington, DC",,,Kendall Joiner,8.0,Shipley
+INCDC240806/fbbf13,2/6/24,3:54:00,"200 block, Kenilworth 0.0 0.0, Lily Ponds, Ward 7.0, Washington, DC",,,Antwan Mitchell,7.0,Lily Ponds
+INCDC240807/164bd1,7/22/24,8:10:00,"3300 block, 6th 5.0 1.0, Capitol Hill, Lincoln Park, Ward 6, Washington, DC",38.89091490215212,-76.99845253188802,Antoine Johnson,8.0,Congress Heights
+INCDC240808/bf3dd2,8/6/24,,"National Mall, Potomac River, Ward 2, Washington, DC",38.8950368,-77.0365427,Deandre Boyd,2,"National Mall, Potomac River"
+INCDC240808/f7a184,7/22/24,,"2000 block, 14th Street NW 5.0 3.0, Columbia Heights, Ward 1.0, Washington, DC",,,Robert Thiam,1.0,Columbia Heights
+INCDC240813/2bd8b7,8/9/24,3:00:00,"600 block, New York 0.0 3.0, Mount Vernon Triangle, Ward 6.0, Washington, DC",,,Anthonio Byrd,6.0,Mount Vernon Triangle
+INCDC240815/f9ff33,7/1/24,,"National Mall, Potomac River, Ward 2, Washington, DC",38.8950368,-77.0365427,Marion Austin,2,"National Mall, Potomac River"
+INCDC240816/0e09c1,3/3/24,0:15:00,"H Street 5.0 0.0, Union Station, Stanton Park, Kingman Park, Ward 6, Washington, DC",38.90020051285249,-76.98772549997477,Daquan Jackson,6.0,Near Northeast
+INCDC240904/613a7f,1/12/24,13:30:00,"4400 block, Hunt 7.0 0.0, Deanwood, Ward 7.0, Washington, DC",,,Marquis Derby,7.0,Deanwood
+INCDC240904/f1e5c6,6/19/24,19:51:00,"Minnesota 0.0 0.0, Deanwood, Ward 7.0, Washington, DC",,,Christian Ware,7.0,Deanwood
+INCDC240923/f8906c,8/4/24,9:35:00,"1300 block, Wallach 7.0 3.0, Pleasant Plains, Ward 1.0, Washington, DC",,,Martrail Cunningham,1.0,Pleasant Plains
+INCDC240923/c500a2,8/17/24,17:08:00,"1000 block, Perry 5.0 3.0, Brookland, Ward 5.0, Washington, DC",,,Martrail Cunningham,5.0,Brookland
+INCDC240923/43eb08,8/14/24,17:45:00,"700 block, Newton 7.0 3.0, Petworth, Ward 1.0, Washington, DC",,,Martrail Cunningham,1.0,Petworth
+INCDC240924/6d0ded,9/1/24,,"5500 block, Jay 5.0 0.0, Burrville, Ward 7.0, Washington, DC",,,Darryl Butler,7.0,Burrville
+INCDC240924/17c855,9/20/24,15:13:00,"1200 block, Bladensburg 4.0 0.0, Trinidad, Ward 5.0, Washington, DC",,,Tony White,5.0,Trinidad
+INCDC240925/231ffe,3/27/24,,"National Mall, Potomac River, Ward 2, Washington, DC",38.8950368,-77.0365427,Michael Robinson,2,"National Mall, Potomac River"
+INCDC241004/264593,9/1/24,19:27:00,"5500 block, Jay 5.0 0.0, Burrville, Ward 7.0, Washington, DC",,,Julan Byrd,7.0,Burrville
+INCDC241009/09b55a,10/4/24,6:45:00,"5200 block, Nannie Helen Burrough 0.0 0.0, Burrville, Ward 7.0, Washington, DC",,,Terrell Edmondson,7.0,Burrville
+INCDC241009/09b55a,10/4/24,6:45:00,"5200 block, Nannie Helen Burrough 0.0 0.0, Burrville, Ward 7.0, Washington, DC",,,Taurian Anderson,7.0,Burrville
+INCDC241001/7d3a70,9/27/24,16:30:00,"3700 block, Minnesota 0.0 0.0, Benning, Ward 7.0, Washington, DC",,,Donovan Adams,7.0,Benning
+INCDC241011/3c7046,8/18/24,20:20:00,"1400 block, Morse 5.0 0.0, Deanwood, Ward 5.0, Washington, DC",,,Shani Burriss,5.0,Deanwood
+INCDC241011/3c7046,8/18/24,20:20:00,"1400 block, Morse 5.0 0.0, Deanwood, Ward 5.0, Washington, DC",,,Rodre Holloway,5.0,Deanwood
+INCDC241016/0f3b8a,8/16/24,3:58:00,"1700 block, 10th 5.0 3.0, Capitol Hill, Lincoln Park, Ward 6, Washington, DC",38.88454374706072,-76.99264993706062,Jordan Grice,2.0,shaw
+INCDC241016/4fac9a,8/17/24,6:00:00,"6th 5.0 3.0, Capitol Hill, Lincoln Park, Ward 6, Washington, DC",38.88777017738393,-76.99845823903902,Jordan Grice,2.0,Mount Vernon Square
+INCDC241016/f87ca6,10/11/24,6:33:00,"Hanover 7.0 3.0, Truxton Circle, Ward 5.0, Washington, DC",,,Eric Woods,5.0,Truxton Circle
+INCDC241018/9b78d6,10/14/24,4:15:00,"Chinatown, Ward 6.0, Washington, DC",,,Anardo Little,6.0,Chinatown
+INCDC241018/50506e,3/12/24,19:10:00,"Anacostia, Ward 8.0, Washington, DC",,,J'Mond Fields,8.0,Anacostia
+INCDC241024/1c08ea,10/19/24,2:36:00,"2400 block, 18th 5.0 3.0, Sheridan, Barry Farm, Buena Vista, Ward 8, Washington, DC",38.857182,-76.978915,Shannara Macku,1.0,Adams Morgan
+INCDC241028/5cf911,5/26/24,17:00:00,"V 5.0 1.0, Woodridge, Fort Lincoln, Gateway, Ward 5, Washington, DC",38.91875477728161,-76.96354584199466,Peguy Sikadi,8.0,Anacostia
+INCDC241029/b3e585,10/25/24,19:30:00,"2600 block, Jasper 5.0 1.0, Oxon Hill, Ward 8.0, Washington, DC",,,Keishawn Johnson,8.0,Oxon Hill
+INCDC241030/ee5e0a,10/28/24,3:06:00,"1000 block, Euclid 5.0 3.0, Columbia heights, Ward 1.0, Washington, DC",,,Unknown,1.0,Columbia heights
+INCDC241101/970e14,10/30/24,23:23:00,"400 block, 14th 5.0 1.0, Union Station, Stanton Park, Kingman Park, Ward 6, Washington, DC",38.896239,-76.98561,Unknown,6.0,Lincoln Park
+INCDC241105/f608d5,11/3/24,20:08:00,"3300 block, 14th 5.0 3.0, Capitol Hill, Lincoln Park, Ward 6, Washington, DC",38.88891068024253,-76.9855020938821,Unknown,1.0,Columbia Heights
+INCDC241108/cacf21,11/5/24,,"National Mall, Potomac River, Ward 2, Washington, DC",38.8950368,-77.0365427,Amiya Hillard,2,"National Mall, Potomac River"
+INCDC241115/f2a48d,5/3/24,15:06:00,"3300 block, Martin Luther King Jr. 0.0 1.0, Congress Heights, Ward 8.0, Washington, DC",,,Dennis Vannison,8.0,Congress Heights
+INCDC241115/819383,5/3/24,11:50:00,"3300 block, Martin Luther King Jr. 0.0 1.0, Congress Heights, Ward 8.0, Washington, DC",,,Dennis Vannison,8.0,Congress Heights
+INCDC241118/f32059,11/15/24,,"1900 block, 8th 5.0 3.0, Capitol Hill, Lincoln Park, Ward 6, Washington, DC",38.88720937299534,-76.99496460830474,Maurice Nelson,1.0,Pleasant Plains
+INCDC241122/ba7a2d,9/22/24,9:26:00,"Truxton Circle, Ward 6.0, Washington, DC",,,Daquan Boone,6.0,Truxton Circle
+INCDC241122/0b13e3,11/18/24,6:50:00,"5000 block, Fort Totten 2.0 0.0, Fort Totten, Ward 5.0, Washington, DC",,,Demonta King,5.0,Fort Totten
+INCDC241202/f9d549,9/19/24,4:44:00,"900 block, 11th 5.0 0.0, Near Northeast, Ward 6.0, Washington, DC",,,Antonio Gaither,6.0,Near Northeast
+INCDC241202/f9d549,9/19/24,4:44:00,"900 block, 11th 5.0 0.0, Near Northeast, Ward 6.0, Washington, DC",,,Derrick West,6.0,Near Northeast
+INCDC241202/c217aa,9/20/24,5:45:00,"800 block, P 5.0 0.0, Shaw, Ward 2.0, Washington, DC",,,Antonio Gaither,2.0,Shaw
+INCDC241202/c217aa,9/20/24,5:45:00,"800 block, P 5.0 0.0, Shaw, Ward 2.0, Washington, DC",,,Derrick West,2.0,Shaw
+INCDC241202/c217aa,9/20/24,5:45:00,"800 block, P 5.0 0.0, Shaw, Ward 2.0, Washington, DC",,,Malcolm Demus,2.0,Shaw
+INCDC241202/bf2342,9/30/24,,"Sheridan 5.0 3.0, Manor Park, Ward 4.0, Washington, DC",,,Derrick West,4.0,Manor Park
+INCDC241202/bf2342,9/30/24,,"Sheridan 5.0 3.0, Manor Park, Ward 4.0, Washington, DC",,,Antonio Gaither,4.0,Manor Park
+INCDC241202/bf2342,9/30/24,,"Sheridan 5.0 3.0, Manor Park, Ward 4.0, Washington, DC",,,Malcolm Demus,4.0,Manor Park
+INCDC241202/07cefc,10/1/24,22:00:00,"9th 5.0 0.0, H Street Corridor, Ward 6.0, Washington, DC",,,Malcolm Demus,6.0,H Street Corridor
+INCDC241202/04d96a,9/21/24,1:36:00,"800 block, Southern 0.0 1.0, Deanwood, Burrville, Grant Park, Lincoln Heights, Fairmont Heights, Ward 7, Washington, DC",38.89231761421889,-76.91007791141011,Malcolm Demus,8.0,Washington Highlands
+INCDC250121/50a287,7/10/24,0:25:00,"1400 block, Cedar Street 5.0 1.0, Washington DC, Ward 8.0, Washington, DC",,,Devonte Carter,8.0,Washington DC
+INCDC250121/5fb6d7,6/19/24,20:53:00,"Wisconsin Avenue 0.0 3.0, Friendship Heights, American University Park, Tenleytown, Ward 3.0, Washington, DC",,,Asia Barber,3.0,"Friendship Heights, American University Park, Tenleytown"
+INCDC250122/fd32ce,9/15/24,7:30:00,"4400 block, Benning 4.0 0.0, Hillbrook, Ward 7.0, Washington, DC",,,Dale Benjamin,7.0,Hillbrook
+INCDC250122/fd32ce,9/15/24,7:30:00,"4600 block, B 5.0 1.0, Marshall Heights, Ward 7.0, Washington, DC",,,Dale Benjamin,7.0,Marshall Heights
+INCDC250122/e4f10a,12/2/24,22:07:00,"1329 block, Kenilworth Avenue 0.0 0.0, Washington DC, Ward 7.0, Washington, DC",,,Devin Spivey,7.0,Washington DC
+INCDC250122/e4f10a,12/2/24,22:07:00,"1329 block, Kenilworth Avenue 0.0 0.0, Washington DC, Ward 7.0, Washington, DC",,,Devon Edwards,7.0,Washington DC
+INCDC250122/e4f10a,12/2/24,22:07:00,"1329 block, Kenilworth Avenue 0.0 0.0, Washington DC, Ward 7.0, Washington, DC",,,Marquis Alexander,7.0,Washington DC
+INCDC250127/cbca6f,9/21/24,11:00:00,"800 block, Southern Avenue 0.0 1.0, Deanwood, Burrville, Grant Park, Lincoln Heights, Fairmont Heights, Ward 7, Washington, DC",38.89231761421889,-76.91007791141011,Mikhail Ashby,8.0,Washington DC
+INCDC250127/78ce76,2/17/24,15:21:00,"Kennedy Street 5.0 3.0, Manor Park, Ward 4.0, Washington, DC",,,Tamika Burriss,4.0,Manor Park
+INCDC250127/fb6b4c,12/19/24,21:20:00,"Brentwood, Ward 5.0, Washington, DC",,,Hozae Minor,5.0,Brentwood
+INCDC250207/a30523,3/22/24,20:16:00,"3000 block, 1st 5.0 1.0, National Mall, Potomac River, Ward 6, Washington, DC",38.89043774870317,-77.00592967991423,Miquel Beasley,8.0,"Congress Heights, Bellevue, Washington Highlands"
+INCDC250214/003464,12/30/24,22:10:00,"1500 block, Maryland 0.0 0.0, Starburst Plaza, Ward 5.0, Washington, DC",,,Jaiquan Moore,5.0,Starburst Plaza
