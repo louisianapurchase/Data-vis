@@ -28,11 +28,11 @@ def get_crypto_data():
 def get_historical_data(crypto_id, time_frame):
     url = f"https://min-api.cryptocompare.com/data/v2/histoday"
     limit_map = {
-        "1D": 1,
         "5D": 5,
         "1M": 30,
         "6M": 180,
         "1Y": 365,
+        "1D": 1,
         "MAX": 2000  # Adjust this as needed
     }
     params = {"fsym": crypto_id, "tsym": "USD", "limit": limit_map.get(time_frame, 200)}
@@ -100,8 +100,18 @@ app.layout = html.Div([
     ], style={"textAlign": "center", "marginBottom": "20px"}),
 
     # Dynamic content containers
-    html.Div(id="crypto-details", style={"color": "#3498db", "marginTop": "20px", "textAlign": "center", "fontSize": "20px", "fontWeight": "bold"}),
+    html.Div(
+    id="details-container",
+    children=[
+        html.Div(id="crypto-details", style={"color": "#3498db", "marginTop": "20px", "textAlign": "center", "fontSize": "20px", "fontWeight": "bold"}),
+        html.Button("Collapse Details", id="collapse-button", style={"display": "none", "margin": "10px"})
+    ],
+    style={"display": "flex", "flexDirection": "column", "alignItems": "center", "justifyContent": "center"}
+),
+
     html.Div(id="crypto-charts", style={"display": "flex", "flexWrap": "wrap", "justifyContent": "center"}),
+
+
 
     # News Section
     html.H2("Latest Crypto News", style={"color": "#f1c40f", "marginTop": "30px"}),
@@ -110,24 +120,32 @@ app.layout = html.Div([
 
 # Callback to update details, charts, and news feed
 @app.callback(
-    [Output("crypto-charts", "children"), Output("crypto-details", "children"), Output("news-feed", "children")],
-    [Input(f"crypto-img-{crypto}", "n_clicks") for crypto in CRYPTO_LIST],
-    [Input("time-frame-dropdown", "value")]
+    [
+        Output("crypto-charts", "children"),
+        Output("crypto-details", "children"),
+        Output("news-feed", "children"),
+    ],
+    [
+        Input(f"crypto-img-{crypto}", "n_clicks") for crypto in CRYPTO_LIST
+    ] + [
+        Input("time-frame-dropdown", "value"),
+        Input("collapse-button", "n_clicks"),
+    ],
+    [State("collapse-button", "style")],
 )
 def update_dashboard(*args):
     ctx = dash.callback_context
-
-    # Determine which input triggered the callback
     triggered_id = ctx.triggered[0]["prop_id"].split(".")[0]
 
-    # Fetch live data once
+    # Fetch live data
     data = get_crypto_data()
     if not data:
         return [], html.P("Error loading data", style={"color": "white"}), []
 
-    # Get the selected time frame
-    time_frame = args[-1]  # Last argument is the time frame dropdown value
+    time_frame = args[-2]
+    collapse_button_style = args[-1]
 
+    # Generate crypto charts
     chart_children = []
     for crypto, prices in data.items():
         historical_data = get_historical_data(crypto, time_frame)
@@ -135,7 +153,6 @@ def update_dashboard(*args):
         timestamps = [pd.to_datetime(price["time"], unit="s") for price in historical_data]
 
         chart_children.append(html.Div([
-            # Chart
             dcc.Graph(
                 figure=go.Figure(
                     data=[go.Scatter(x=timestamps, y=price_points, mode="lines", name=crypto)],
@@ -150,21 +167,35 @@ def update_dashboard(*args):
             )
         ], style={"textAlign": "center"}))
 
-    # Handle logo clicks for details
-    details_text = html.P(
+    # Handle crypto details & collapse button
+    details_content = html.P(
         "Click a crypto icon above for details",
         style={"color": "#f1c40f", "fontSize": "20px", "fontWeight": "bold"}
     )
+
     if triggered_id.startswith("crypto-img-"):
         crypto_id = triggered_id.replace("crypto-img-", "")
         extra_details = get_extra_details(crypto_id)
-        details_text = html.Div([
+        details_content = html.Div([
             html.H3(f"{crypto_id} Details", style={"color": "#3498db"}),
             html.P(f"Current Price (USD): ${extra_details.get('PRICE', 0):,.2f}"),
             html.P(f"24h Change: {extra_details.get('CHANGEPCT24HOUR', 0):.2f}%"),
             html.P(f"Market Cap: ${extra_details.get('MKTCAP', 0):,.2f}"),
             html.P(f"24h Volume: ${extra_details.get('TOTALVOLUME24HTO', 0):,.2f}")
         ], style={"border": "1px solid #3498db", "padding": "10px", "borderRadius": "10px", "backgroundColor": "#2c3e50"})
+        collapse_button_style = {"display": "block", "margin": "10px"}
+
+    elif triggered_id == "collapse-button":
+        details_content = html.P(
+            "Click a crypto icon above for details",
+            style={"color": "#f1c40f", "fontSize": "20px", "fontWeight": "bold"}
+        )
+        collapse_button_style = {"display": "none"}
+
+    details_container = html.Div([
+        details_content,
+        html.Button("Collapse Details", id="collapse-button", style=collapse_button_style)
+    ], style={"display": "flex", "flexDirection": "column", "alignItems": "center", "justifyContent": "center"})
 
     # Fetch and display crypto news
     news_data = get_crypto_news()
@@ -174,12 +205,7 @@ def update_dashboard(*args):
                 article["title"],
                 href=article["url"],
                 target="_blank",
-                style={
-                    "color": "#3498db",
-                    "textDecoration": "underline",
-                    "cursor": "pointer",
-                    "fontWeight": "bold"
-                }
+                style={"color": "#3498db", "textDecoration": "underline", "cursor": "pointer", "fontWeight": "bold"}
             ),
             html.P(
                 article["body"][:150] + "...",
@@ -189,7 +215,9 @@ def update_dashboard(*args):
         for article in news_data
     ]
 
-    return chart_children, details_text, news_feed
+    return chart_children, details_container, news_feed
+
+
 
 # Run app
 if __name__ == "__main__":
