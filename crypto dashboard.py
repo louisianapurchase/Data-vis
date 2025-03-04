@@ -3,18 +3,17 @@ from dash import dcc, html, Input, Output, State
 import plotly.graph_objs as go
 import requests
 import pandas as pd
-from datetime import datetime, timedelta
+import numpy as np
 
 # Initialize Dash app
 app = dash.Dash(__name__, suppress_callback_exceptions=True)
-
 app.title = "Live Crypto Dashboard"
 
 # Replace this with your CryptoCompare API key
 API_KEY = "16a875792eb8ede0e495d5b058a02741c6fd7a6e1a22143d5def2fdec3c173a2"
 
-# List of cryptocurrencies to display
-CRYPTO_LIST = ["ETH", "BTC", "DASH", "LTC", "ADA", "XRP"]
+# List of cryptocurrencies to display (expanded list)
+CRYPTO_LIST = ["BTC", "ETH", "BNB", "ADA", "XRP", "SOL", "DOT", "DOGE", "AVAX", "LTC"]
 
 # Function to fetch live crypto data
 def get_crypto_data():
@@ -28,17 +27,38 @@ def get_crypto_data():
 def get_historical_data(crypto_id, time_frame):
     url = f"https://min-api.cryptocompare.com/data/v2/histoday"
     limit_map = {
+        "1D": 1,
         "5D": 5,
         "1M": 30,
         "6M": 180,
         "1Y": 365,
-        "1D": 1,
         "MAX": 2000  # Adjust this as needed
     }
     params = {"fsym": crypto_id, "tsym": "USD", "limit": limit_map.get(time_frame, 200)}
     headers = {"Authorization": f"Apikey {API_KEY}"}
     response = requests.get(url, params=params, headers=headers)
-    return response.json().get("Data", {}).get("Data", [])
+    if response.status_code == 200:
+        return response.json().get("Data", {}).get("Data", [])
+    else:
+        return []
+
+# Function to calculate moving average
+def calculate_moving_average(prices, window=7):
+    return np.convolve(prices, np.ones(window), "valid") / window
+
+# Function to calculate RSI (Relative Strength Index)
+def calculate_rsi(prices, window=14):
+    deltas = np.diff(prices)
+    gains = np.where(deltas > 0, deltas, 0)
+    losses = np.where(deltas < 0, -deltas, 0)
+    avg_gain = np.zeros_like(prices)
+    avg_loss = np.zeros_like(prices)
+    for i in range(1, len(prices)):
+        avg_gain[i] = (avg_gain[i - 1] * (window - 1) + gains[i - 1]) / window
+        avg_loss[i] = (avg_loss[i - 1] * (window - 1) + losses[i - 1]) / window
+    rs = avg_gain / avg_loss
+    rsi = 100 - (100 / (1 + rs))
+    return rsi[window:]  # Return RSI values after the initial window
 
 # Function to fetch coin logo
 def get_coin_logo(crypto_id):
@@ -68,6 +88,20 @@ def get_crypto_news():
 app.layout = html.Div([
     html.H1("Live Cryptocurrency Dashboard", style={"textAlign": "center", "color": "#3498db"}),
 
+    # Theme toggle button
+    html.Div([
+        html.Button("Toggle Theme", id="theme-toggle", style={
+            "margin": "10px",
+            "padding": "10px 20px",
+            "borderRadius": "5px",
+            "border": "none",
+            "background": "linear-gradient(45deg, #3498db, #8e44ad)",
+            "color": "white",
+            "cursor": "pointer",
+            "fontSize": "16px"
+        })
+    ], style={"textAlign": "center"}),
+
     # Time frame selection dropdown with label
     html.Div([
         html.Label(
@@ -86,7 +120,42 @@ app.layout = html.Div([
             ],
             value="1D",  # Default value
             clearable=False,
-            style={"width": "200px", "display": "inline-block"}
+            style={"width": "200px", "display": "inline-block", "color": "#000000"}  # Ensure text is visible
+        )
+    ], style={"textAlign": "center", "marginBottom": "20px"}),
+
+    # Crypto selection dropdown
+    html.Div([
+        html.Label(
+            "Select Cryptocurrencies to Display:",
+            style={"color": "#3498db", "fontSize": "18px", "marginRight": "10px"}
+        ),
+        dcc.Dropdown(
+            id="crypto-selector",
+            options=[{"label": crypto, "value": crypto} for crypto in CRYPTO_LIST],
+            value=CRYPTO_LIST[:5],  # Default to first 5 cryptos
+            multi=True,
+            clearable=False,
+            style={"width": "400px", "display": "inline-block", "color": "#000000"}  # Ensure text is visible
+        )
+    ], style={"textAlign": "center", "marginBottom": "20px"}),
+
+    # Line toggles
+    html.Div([
+        html.Label(
+            "Toggle Lines:",
+            style={"color": "#3498db", "fontSize": "18px", "marginRight": "10px"}
+        ),
+        dcc.Checklist(
+            id="line-toggles",
+            options=[
+                {"label": "Price", "value": "price"},
+                {"label": "7-Day MA", "value": "ma"},
+                {"label": "RSI", "value": "rsi"}
+            ],
+            value=["price"],  # Default to showing only price
+            inline=True,
+            style={"display": "inline-block"}
         )
     ], style={"textAlign": "center", "marginBottom": "20px"}),
 
@@ -101,69 +170,101 @@ app.layout = html.Div([
 
     # Dynamic content containers
     html.Div(
-    id="details-container",
-    children=[
-        html.Div(id="crypto-details", style={"color": "#3498db", "marginTop": "20px", "textAlign": "center", "fontSize": "20px", "fontWeight": "bold"}),
-        html.Button("Collapse Details", id="collapse-button", style={"display": "none", "margin": "10px"})
-    ],
-    style={"display": "flex", "flexDirection": "column", "alignItems": "center", "justifyContent": "center"}
-),
+        id="details-container",
+        children=[
+            html.Div(id="crypto-details", style={"color": "#3498db", "marginTop": "20px", "textAlign": "center", "fontSize": "20px", "fontWeight": "bold"}),
+            html.Button("Collapse Details", id="collapse-button", style={
+                "display": "none",
+                "margin": "10px",
+                "padding": "10px 20px",
+                "borderRadius": "5px",
+                "border": "none",
+                "background": "linear-gradient(45deg, #3498db, #8e44ad)",
+                "color": "white",
+                "cursor": "pointer",
+                "fontSize": "16px"
+            })
+        ],
+        style={"display": "flex", "flexDirection": "column", "alignItems": "center", "justifyContent": "center"}
+    ),
 
-    html.Div(id="crypto-charts", style={"display": "flex", "flexWrap": "wrap", "justifyContent": "center"}),
-
-
+    # Charts container
+    html.Div(id="crypto-charts", style={"display": "flex", "flexWrap": "wrap", "justifyContent": "center", "gap": "20px"}),
 
     # News Section
     html.H2("Latest Crypto News", style={"color": "#f1c40f", "marginTop": "30px"}),
-    html.Div(id="news-feed", style={"color": "#f1c40f"})
-], style={"backgroundColor": "#1e1e1e", "padding": "20px", "minHeight": "100vh"})
+    html.Div(id="news-feed", style={"color": "#f1c40f"}),
 
-# Callback to update details, charts, and news feed
-# Callback to update the crypto charts based on the selected time frame
+    # Interval component for real-time updates
+    dcc.Interval(id="interval-component", interval=60 * 1000, n_intervals=0)  # Update every 60 seconds
+], id="main-container", style={"backgroundColor": "#1e1e1e", "padding": "20px", "minHeight": "100vh"})
+
 # Callback to update the crypto charts based on the selected time frame
 @app.callback(
     Output("crypto-charts", "children"),
     [
         Input("time-frame-dropdown", "value"),
+        Input("crypto-selector", "value"),
+        Input("line-toggles", "value"),
+        Input("interval-component", "n_intervals")
     ]
 )
-def update_charts(time_frame):
+def update_charts(time_frame, selected_cryptos, line_toggles, n_intervals):
     chart_children = []
-    for crypto in CRYPTO_LIST:
-        # Fetch historical data for the selected time frame
+    for crypto in selected_cryptos:
         historical_data = get_historical_data(crypto, time_frame)
-        
-        # Debugging: Print the time frame and historical data length
-        print(f"Time Frame: {time_frame}, Crypto: {crypto}, Data Length: {len(historical_data)}")
-        
         if not historical_data:
-            # If no data is returned, display an error message
             chart_children.append(html.Div([
                 html.P(f"No data available for {crypto} ({time_frame})", style={"color": "white"})
             ]))
             continue
-        
+
         # Extract price points and timestamps
         price_points = [price["close"] for price in historical_data]
         timestamps = [pd.to_datetime(price["time"], unit="s") for price in historical_data]
 
+        # Calculate moving average and RSI
+        moving_avg = calculate_moving_average(price_points)
+        rsi = calculate_rsi(price_points)
+
         # Create the graph
+        data = []
+        if "price" in line_toggles:
+            data.append(go.Scatter(x=timestamps, y=price_points, mode="lines", name="Price"))
+        if "ma" in line_toggles:
+            data.append(go.Scatter(x=timestamps[len(timestamps) - len(moving_avg):], y=moving_avg, mode="lines", name="7-Day MA"))
+        if "rsi" in line_toggles:
+            data.append(go.Scatter(x=timestamps[len(timestamps) - len(rsi):], y=rsi, mode="lines", name="RSI", yaxis="y2"))
+
         chart_children.append(html.Div([
             dcc.Graph(
                 figure=go.Figure(
-                    data=[go.Scatter(x=timestamps, y=price_points, mode="lines", name=crypto)],
+                    data=data,
                     layout=go.Layout(
                         title=f"{crypto} Price History ({time_frame})",
                         xaxis={"title": "Date"},
                         yaxis={"title": "Price (USD)"},
+                        yaxis2={"title": "RSI", "overlaying": "y", "side": "right"},
                         template="plotly_dark"
                     )
                 ),
-                style={"width": "450px", "height": "300px", "borderRadius": "10px", "boxShadow": "0 4px 8px rgba(0, 0, 0, 0.3)", "margin": "10px"}
+                style={"width": "450px", "height": "300px", "borderRadius": "10px", "boxShadow": "0 4px 8px rgba(0, 0, 0, 0.3)"}
             )
-        ], style={"textAlign": "center"}))
+        ]))
 
     return chart_children
+
+# Callback to toggle theme
+@app.callback(
+    Output("main-container", "style"),
+    [Input("theme-toggle", "n_clicks")],
+    [State("main-container", "style")]
+)
+def toggle_theme(n_clicks, current_style):
+    if n_clicks and n_clicks % 2 == 1:
+        return {"backgroundColor": "#ffffff", "color": "#000000", "padding": "20px", "minHeight": "100vh"}
+    else:
+        return {"backgroundColor": "#1e1e1e", "color": "#ffffff", "padding": "20px", "minHeight": "100vh"}
 
 # Callback to update the crypto details and news feed
 @app.callback(
@@ -175,6 +276,7 @@ def update_charts(time_frame):
         Input(f"crypto-img-{crypto}", "n_clicks") for crypto in CRYPTO_LIST
     ] + [
         Input("collapse-button", "n_clicks"),
+        Input("interval-component", "n_intervals")
     ],
     [State("collapse-button", "style")],
 )
@@ -191,7 +293,7 @@ def update_details_and_news(*args):
 
     # Handle crypto details & collapse button
     details_content = html.P(
-        "Click a crypto icon above for details",
+        "Click a crypto icon for live stats and details",
         style={"color": "#f1c40f", "fontSize": "20px", "fontWeight": "bold"}
     )
 
@@ -209,7 +311,7 @@ def update_details_and_news(*args):
 
     elif triggered_id == "collapse-button":
         details_content = html.P(
-            "Click a crypto icon above for details",
+            "Click a crypto icon for live stats and details",
             style={"color": "#f1c40f", "fontSize": "20px", "fontWeight": "bold"}
         )
         collapse_button_style = {"display": "none"}
@@ -238,7 +340,6 @@ def update_details_and_news(*args):
     ]
 
     return details_container, news_feed
-
 
 # Run app
 if __name__ == "__main__":
