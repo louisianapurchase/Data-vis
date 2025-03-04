@@ -119,39 +119,35 @@ app.layout = html.Div([
 ], style={"backgroundColor": "#1e1e1e", "padding": "20px", "minHeight": "100vh"})
 
 # Callback to update details, charts, and news feed
+# Callback to update the crypto charts based on the selected time frame
+# Callback to update the crypto charts based on the selected time frame
 @app.callback(
+    Output("crypto-charts", "children"),
     [
-        Output("crypto-charts", "children"),
-        Output("crypto-details", "children"),
-        Output("news-feed", "children"),
-    ],
-    [
-        Input(f"crypto-img-{crypto}", "n_clicks") for crypto in CRYPTO_LIST
-    ] + [
         Input("time-frame-dropdown", "value"),
-        Input("collapse-button", "n_clicks"),
-    ],
-    [State("collapse-button", "style")],
+    ]
 )
-def update_dashboard(*args):
-    ctx = dash.callback_context
-    triggered_id = ctx.triggered[0]["prop_id"].split(".")[0]
-
-    # Fetch live data
-    data = get_crypto_data()
-    if not data:
-        return [], html.P("Error loading data", style={"color": "white"}), []
-
-    time_frame = args[-2]
-    collapse_button_style = args[-1]
-
-    # Generate crypto charts
+def update_charts(time_frame):
     chart_children = []
-    for crypto, prices in data.items():
+    for crypto in CRYPTO_LIST:
+        # Fetch historical data for the selected time frame
         historical_data = get_historical_data(crypto, time_frame)
+        
+        # Debugging: Print the time frame and historical data length
+        print(f"Time Frame: {time_frame}, Crypto: {crypto}, Data Length: {len(historical_data)}")
+        
+        if not historical_data:
+            # If no data is returned, display an error message
+            chart_children.append(html.Div([
+                html.P(f"No data available for {crypto} ({time_frame})", style={"color": "white"})
+            ]))
+            continue
+        
+        # Extract price points and timestamps
         price_points = [price["close"] for price in historical_data]
         timestamps = [pd.to_datetime(price["time"], unit="s") for price in historical_data]
 
+        # Create the graph
         chart_children.append(html.Div([
             dcc.Graph(
                 figure=go.Figure(
@@ -166,6 +162,32 @@ def update_dashboard(*args):
                 style={"width": "450px", "height": "300px", "borderRadius": "10px", "boxShadow": "0 4px 8px rgba(0, 0, 0, 0.3)", "margin": "10px"}
             )
         ], style={"textAlign": "center"}))
+
+    return chart_children
+
+# Callback to update the crypto details and news feed
+@app.callback(
+    [
+        Output("crypto-details", "children"),
+        Output("news-feed", "children"),
+    ],
+    [
+        Input(f"crypto-img-{crypto}", "n_clicks") for crypto in CRYPTO_LIST
+    ] + [
+        Input("collapse-button", "n_clicks"),
+    ],
+    [State("collapse-button", "style")],
+)
+def update_details_and_news(*args):
+    ctx = dash.callback_context
+    triggered_id = ctx.triggered[0]["prop_id"].split(".")[0]
+
+    # Fetch live data
+    data = get_crypto_data()
+    if not data:
+        return html.P("Error loading data", style={"color": "white"}), []
+
+    collapse_button_style = args[-1]
 
     # Handle crypto details & collapse button
     details_content = html.P(
@@ -215,8 +237,7 @@ def update_dashboard(*args):
         for article in news_data
     ]
 
-    return chart_children, details_container, news_feed
-
+    return details_container, news_feed
 
 
 # Run app
