@@ -4,6 +4,7 @@ import plotly.graph_objs as go
 import requests
 import pandas as pd
 import numpy as np
+from datetime import datetime, timedelta
 
 # Initialize Dash app
 app = dash.Dash(__name__, suppress_callback_exceptions=True)
@@ -86,12 +87,11 @@ def get_crypto_news():
 
 # Define layout
 app.layout = html.Div([
-    html.H1("Live Cryptocurrency Dashboard", style={"textAlign": "center", "color": "#3498db"}),
-
-    # Theme toggle button
+    # Top bar with refresh countdown and theme toggle
     html.Div([
+        html.Div("Live Cryptocurrency Dashboard", style={"fontSize": "24px", "fontWeight": "bold", "color": "#3498db"}),
+        html.Div(id="refresh-countdown", style={"fontSize": "16px", "color": "#3498db"}),
         html.Button("Toggle Theme", id="theme-toggle", style={
-            "margin": "10px",
             "padding": "10px 20px",
             "borderRadius": "5px",
             "border": "none",
@@ -100,78 +100,82 @@ app.layout = html.Div([
             "cursor": "pointer",
             "fontSize": "16px"
         })
-    ], style={"textAlign": "center"}),
+    ], style={"display": "flex", "justifyContent": "space-between", "alignItems": "center", "padding": "10px", "borderBottom": "1px solid #34495e"}),
 
-    # Time frame selection dropdown with label
+    # Main content
     html.Div([
-        html.Label(
-            "Select Time Scale for Charts:",
-            style={"color": "#3498db", "fontSize": "18px", "marginRight": "10px"}
-        ),
-        dcc.Dropdown(
-            id="time-frame-dropdown",
-            options=[
-                {"label": "1 Day", "value": "1D"},
-                {"label": "5 Days", "value": "5D"},
-                {"label": "1 Month", "value": "1M"},
-                {"label": "6 Months", "value": "6M"},
-                {"label": "1 Year", "value": "1Y"},
-                {"label": "Max", "value": "MAX"}
-            ],
-            value="1D",  # Default value
-            clearable=False,
-            style={"width": "200px", "display": "inline-block", "color": "#000000"}  # Ensure text is visible
-        )
-    ], style={"textAlign": "center", "marginBottom": "20px"}),
+        # Left sidebar for controls and news
+        html.Div([
+            # Time frame selection dropdown
+            html.Div([
+                html.Label("Select Time Scale for Charts:", style={"fontSize": "18px", "marginBottom": "10px"}),
+                dcc.Dropdown(
+                    id="time-frame-dropdown",
+                    options=[
+                        {"label": "1 Day", "value": "1D"},
+                        {"label": "5 Days", "value": "5D"},
+                        {"label": "1 Month", "value": "1M"},
+                        {"label": "6 Months", "value": "6M"},
+                        {"label": "1 Year", "value": "1Y"},
+                        {"label": "Max", "value": "MAX"}
+                    ],
+                    value="1D",  # Default value
+                    clearable=False,
+                    style={"width": "100%", "color": "#000000", "borderRadius": "5px", "padding": "10px"}
+                )
+            ], style={"marginBottom": "20px"}),
 
-    # Crypto selection dropdown
-    html.Div([
-        html.Label(
-            "Select Cryptocurrencies to Display:",
-            style={"color": "#3498db", "fontSize": "18px", "marginRight": "10px"}
-        ),
-        dcc.Dropdown(
-            id="crypto-selector",
-            options=[{"label": crypto, "value": crypto} for crypto in CRYPTO_LIST],
-            value=CRYPTO_LIST[:5],  # Default to first 5 cryptos
-            multi=True,
-            clearable=False,
-            style={"width": "400px", "display": "inline-block", "color": "#000000"}  # Ensure text is visible
-        )
-    ], style={"textAlign": "center", "marginBottom": "20px"}),
+            # Crypto selection dropdown
+            html.Div([
+                html.Label("Select Cryptocurrencies to Display:", style={"fontSize": "18px", "marginBottom": "10px"}),
+                dcc.Dropdown(
+                    id="crypto-selector",
+                    options=[{"label": crypto, "value": crypto} for crypto in CRYPTO_LIST],
+                    value=CRYPTO_LIST[:5],  # Default to first 5 cryptos
+                    multi=True,
+                    clearable=False,
+                    style={"width": "100%", "color": "#000000", "borderRadius": "5px", "padding": "10px"}
+                )
+            ], style={"marginBottom": "20px"}),
 
-    # Line toggles
-    html.Div([
-        html.Label(
-            "Toggle Lines:",
-            style={"color": "#3498db", "fontSize": "18px", "marginRight": "10px"}
-        ),
-        dcc.Checklist(
-            id="line-toggles",
-            options=[
-                {"label": "Price", "value": "price"},
-                {"label": "7-Day MA", "value": "ma"},
-                {"label": "RSI", "value": "rsi"}
-            ],
-            value=["price"],  # Default to showing only price
-            inline=True,
-            style={"display": "inline-block"}
-        )
-    ], style={"textAlign": "center", "marginBottom": "20px"}),
+            # Line toggles
+            html.Div([
+                html.Label("Toggle Lines:", style={"fontSize": "18px", "marginBottom": "10px"}),
+                dcc.Checklist(
+                    id="line-toggles",
+                    options=[
+                        {"label": "Price", "value": "price"},
+                        {"label": "7-Day MA", "value": "ma"},
+                        {"label": "RSI", "value": "rsi"}
+                    ],
+                    value=["price"],  # Default to showing only price
+                    inline=True,
+                    style={"display": "flex", "flexDirection": "column"}
+                )
+            ], style={"marginBottom": "20px"}),
 
-    # Crypto icons in the initial layout
-    html.Div([
-        html.Img(
-            src=get_coin_logo(crypto),
-            id=f"crypto-img-{crypto}",
-            style={"height": "50px", "width": "50px", "cursor": "pointer", "margin": "10px"}
-        ) for crypto in CRYPTO_LIST
-    ], style={"textAlign": "center", "marginBottom": "20px"}),
+            # News Section
+            html.H2("Latest Crypto News", style={"color": "#f1c40f", "marginTop": "30px"}),
+            html.Div(id="news-feed", style={"color": "#f1c40f"})
+        ], style={"width": "20%", "padding": "20px", "borderRight": "1px solid #34495e"}),
 
-    # Dynamic content containers
-    html.Div(
-        id="details-container",
-        children=[
+        # Main content area for charts
+        html.Div([
+            # Charts container
+            html.Div(id="crypto-charts", style={"display": "flex", "flexWrap": "wrap", "gap": "20px", "padding": "20px"})
+        ], style={"width": "60%", "padding": "20px"}),
+
+        # Right sidebar for crypto icons and details
+        html.Div([
+            html.Div([
+                html.Img(
+                    src=get_coin_logo(crypto),
+                    id=f"crypto-img-{crypto}",
+                    style={"height": "50px", "width": "50px", "cursor": "pointer", "margin": "10px"}
+                ) for crypto in CRYPTO_LIST
+            ], style={"textAlign": "center", "marginBottom": "20px"}),
+
+            # Crypto details
             html.Div(id="crypto-details", style={"color": "#3498db", "marginTop": "20px", "textAlign": "center", "fontSize": "20px", "fontWeight": "bold"}),
             html.Button("Collapse Details", id="collapse-button", style={
                 "display": "none",
@@ -184,16 +188,8 @@ app.layout = html.Div([
                 "cursor": "pointer",
                 "fontSize": "16px"
             })
-        ],
-        style={"display": "flex", "flexDirection": "column", "alignItems": "center", "justifyContent": "center"}
-    ),
-
-    # Charts container
-    html.Div(id="crypto-charts", style={"display": "flex", "flexWrap": "wrap", "justifyContent": "center", "gap": "20px"}),
-
-    # News Section
-    html.H2("Latest Crypto News", style={"color": "#f1c40f", "marginTop": "30px"}),
-    html.Div(id="news-feed", style={"color": "#f1c40f"}),
+        ], style={"width": "20%", "padding": "20px", "borderLeft": "1px solid #34495e"})
+    ], style={"display": "flex"}),
 
     # Interval component for real-time updates
     dcc.Interval(id="interval-component", interval=60 * 1000, n_intervals=0)  # Update every 60 seconds
@@ -253,6 +249,15 @@ def update_charts(time_frame, selected_cryptos, line_toggles, n_intervals):
         ]))
 
     return chart_children
+
+# Callback to update the refresh countdown
+@app.callback(
+    Output("refresh-countdown", "children"),
+    [Input("interval-component", "n_intervals")]
+)
+def update_countdown(n_intervals):
+    next_refresh = datetime.now() + timedelta(seconds=60)
+    return f"Next refresh: {next_refresh.strftime('%H:%M:%S')}"
 
 # Callback to toggle theme
 @app.callback(
